@@ -17,11 +17,23 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    body = {'message': 'Flask SQLAlchemy Lab 1'}
-    return make_response(body, 200)
+  body = {'message': 'Flask SQLAlchemy Lab 1'}
+  return make_response(body, 200)
 
 # Add views here
-
+@app.route('/earthquakes/<int:id>')
+def get_earthquake_details(id):
+  earthquake = db.session.get(Earthquake, id)
+  
+  if earthquake:
+    return make_response({
+      'id': earthquake.id,
+      'location': earthquake.location,
+      'magnitude': earthquake.magnitude,
+      'year': earthquake.year
+    }, 200)
+    
+  return make_response({ 'message': f'Earthquake {id} not found.' }, 404)
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+  app.run(port=5555, debug=True)
